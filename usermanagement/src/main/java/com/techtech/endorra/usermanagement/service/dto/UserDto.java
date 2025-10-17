@@ -36,4 +36,6 @@ public class UserDto
 
     public String getMobile() { return mobile; }
     public void setMobile(String mobile) { this.mobile = mobile; }
+
+    public static UserDto fromEntity(User user) { return new UserDto(user); }
 }
