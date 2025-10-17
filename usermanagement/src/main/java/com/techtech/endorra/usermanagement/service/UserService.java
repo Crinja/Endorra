@@ -18,7 +18,6 @@ import com.techtech.endorra.usermanagement.model.Token;
 import com.techtech.endorra.usermanagement.model.User;
 import com.techtech.endorra.usermanagement.repository.UserRepository;
 import com.techtech.endorra.usermanagement.service.dto.LoginResponse;
-import com.techtech.endorra.usermanagement.service.dto.UserDto;
 
 @Service
 public class UserService 
@@ -155,14 +154,5 @@ public class UserService
         tokenStore.entrySet().removeIf(entry ->
                 LocalDateTime.now().isAfter(entry.getValue().getExpiry())
         );
-    }
-
-    public static UserDto toDto(User user) 
-    {
-    if (user == null) return null;
-
-    UserDto userDto = new UserDto(user);
-
-    return userDto;
     }
 }
