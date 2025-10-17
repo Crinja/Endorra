@@ -35,24 +35,33 @@ public class Product
     @Column(nullable = false)
     private BigDecimal price;
 
-    @Column
-    private Double salePercentage;
-
-    @Column(nullable = false)
-    private boolean onSale = false;
+    @Column(nullable = false) 
+    private int stock;
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
     private byte[] image;
 
+    @Column
+    private Double salePercentage;
+
+    @Column(nullable = false) 
+    private boolean onSale = false;
+
+
     public Product() {}
 
-    public Product(String name, String description, BigDecimal price) 
+    public Product(String name, String description, BigDecimal price, int stock) 
     {
-        this(name, description, price, null, false);
+        this(name, description, price, stock, null);
     }
 
-    public Product(String name, String description, BigDecimal price, Double salePercentage, boolean onSale) 
+    public Product(String name, String description, BigDecimal price, int stock, byte[] image) 
+    {
+        this(name, description, price, stock, image, null, false);
+    }
+
+    public Product(String name, String description, BigDecimal price, int stock, byte[] image, Double salePercentage, boolean onSale) 
     {
         this.setName(name);
         this.setDescription(description);
@@ -86,6 +95,11 @@ public class Product
 
     public boolean isOnSale() { return onSale; }
     public void setOnSale(boolean onSale) { this.onSale = onSale; }
+
+    public int getStock() { return stock; }
+    public void setStock(int stock) { this.stock = stock; }
+    public void addStock(int number) { this.stock += number; }
+    public void removeStock(int number) { this.stock -= number; }
 
     public byte[] getImage() { return image; }
     public void setImage(byte[] image) { this.image = image; }
