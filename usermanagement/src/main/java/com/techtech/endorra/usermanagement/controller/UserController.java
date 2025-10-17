@@ -36,7 +36,7 @@ public class UserController
         }
 
         User user = userService.saveUser(newUser);
-        UserDto dto = UserService.toDto(user);
+        UserDto dto = UserDto.fromEntity(user);
         return ResponseEntity.ok(dto);
     }
 
@@ -68,7 +68,7 @@ public class UserController
         User user = userService.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        UserDto dto = UserService.toDto(user);
+        UserDto dto = UserDto.fromEntity(user);
         return ResponseEntity.ok(dto);
     }
 
