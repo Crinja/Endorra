@@ -2,9 +2,12 @@ package com.techtech.endorra.stockmanagement.model;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +33,10 @@ public class Product
     @NotBlank
     @Column(nullable = false)
     private String description;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Column(name = "tag")
+    private List<String> tags;
 
     @NotNull
     @Column(nullable = false)
@@ -79,6 +86,27 @@ public class Product
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
+    public List<String> getTags() { return tags; }
+    public void setTags(List<String> tags) { this.tags = (tags != null) ? new ArrayList<>(tags) : new ArrayList<>(); }
+    public void addTag(String tag) 
+    {
+        if (tag == null || tag.isBlank()) 
+        {
+            throw new IllegalArgumentException("Tag cannot be null or blank");
+        }
+        if (!tags.contains(tag)) 
+        {
+            tags.add(tag.trim());
+        }
+    }
+    public void removeTag(String tag) 
+    {
+        if (tag != null) 
+        {
+            tags.remove(tag.trim());
+        }
+    }
+
     public BigDecimal getPrice() { return price; }
     public void setPrice(BigDecimal price) { this.price = price; }
 
@@ -99,7 +127,14 @@ public class Product
     public int getStock() { return stock; }
     public void setStock(int stock) { this.stock = stock; }
     public void addStock(int number) { this.stock += number; }
-    public void removeStock(int number) { this.stock -= number; }
+    public void removeStock(int number) 
+    { 
+        if (number > this.stock) 
+        {
+        throw new IllegalArgumentException("Not enough stock available");
+        }
+        this.stock -= number; 
+    }
 
     public byte[] getImage() { return image; }
     public void setImage(byte[] image) { this.image = image; }

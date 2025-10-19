@@ -1,6 +1,7 @@
 package com.techtech.endorra.stockmanagement.service.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.techtech.endorra.stockmanagement.model.Product;
 
@@ -9,6 +10,7 @@ public class ProductDto {
     private Long id;
     private String name;
     private String description;
+    private List<String> tags;
     private BigDecimal price;
     private int stock;
     private boolean onSale;
@@ -26,6 +28,7 @@ public class ProductDto {
             product.getId(),
             product.getName(),
             product.getDescription(),
+            product.getTags(),
             product.getPrice(),
             product.getStock(),
             product.isOnSale(),
@@ -36,14 +39,16 @@ public class ProductDto {
         );
     }
 
-    public ProductDto(Long id, String name, String description, BigDecimal price, int stock,
-                      boolean onSale, Double salePercentage,
-                      BigDecimal currentPrice, BigDecimal savings,
-                      byte[] image) {
+    public ProductDto(Long id, String name, String description, List<String> tags, 
+                        BigDecimal price, int stock,
+                        boolean onSale, Double salePercentage,
+                        BigDecimal currentPrice, BigDecimal savings,
+                        byte[] image) {
         this.setId(id);
         this.setName(name);
         this.setDescription(description);
-        this.setPrice(currentPrice);
+        this.setTags(tags);
+        this.setPrice(price);
         this.setOnSale(onSale);
         this.setSalePercentage(salePercentage);
         this.setCurrentPrice(currentPrice);
@@ -59,6 +64,9 @@ public class ProductDto {
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
+    public List<String> getTags() { return tags; }
+    public void setTags(List<String> tags) { this.tags = tags; }
 
     public BigDecimal getPrice() { return price; }
     public void setPrice(BigDecimal price) { this.price = price; }
