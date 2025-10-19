@@ -1,5 +1,8 @@
 package com.techtech.endorra.stockmanagement.controller;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +37,19 @@ public class ProductController {
         Product product = productService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         return ResponseEntity.ok(ProductDto.fromEntity(product));
+    }
+
+    @GetMapping("/tags")
+    public ResponseEntity<List<ProductDto>> getProductsByTags(
+            @RequestParam("list") String tagList) 
+    {
+        List<String> tags = Arrays.stream(tagList.split(","))
+                                .map(String::trim)
+                                .filter(t -> !t.isEmpty())
+                                .toList();
+
+        List<ProductDto> products = productService.findByTag(tags);
+        return ResponseEntity.ok(products);
     }
 
     @PutMapping("/{id}")
