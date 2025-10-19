@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.techtech.endorra.catalog.model.Cart;
 import com.techtech.endorra.catalog.service.CartService;
 import com.techtech.endorra.catalog.service.dto.CartDto;
+import com.techtech.endorra.catalog.service.dto.ProductDto;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -28,13 +30,15 @@ public class CartController
 
     @PostMapping
     public ResponseEntity<CartDto> createCart(@RequestHeader("Authorization") String token) 
-    throws Exception {
+    throws Exception 
+    {
         Cart saved = cartService.saveCart(token, new Cart());
         return ResponseEntity.ok(CartDto.fromEntity(saved, cartService));
     }
 
     @GetMapping
-    public ResponseEntity<List<CartDto>> getCarts(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<List<CartDto>> getCarts(@RequestHeader("Authorization") String token) 
+    {
         List<Cart> carts = cartService.getCarts(token);
 
         List<CartDto> cartDtos = carts.stream()
@@ -45,7 +49,8 @@ public class CartController
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CartDto> getCart(@RequestHeader("Authorization") String token, @PathVariable("id") Long id) {
+    public ResponseEntity<CartDto> getCart(@RequestHeader("Authorization") String token, @PathVariable("id") Long id) 
+    {
         Cart cart = cartService.getCart(token, id)
             .orElseThrow(() -> new RuntimeException("Cart not found"));
 
@@ -53,5 +58,38 @@ public class CartController
 
         return ResponseEntity.ok(cartDto);
     }
+
+    @GetMapping("/{id}/delete")
+    public ResponseEntity<String> deleteCart(@RequestHeader("Authorization") String token, @PathVariable("id") Long id) 
+    {
+        cartService.deleteCart(token, id);
+
+        return ResponseEntity.ok("Cart deleted");
+    }
+
+    @GetMapping("/{id}/add/{productId}")
+    public ResponseEntity<CartDto> addToCart(@RequestHeader("Authorization") String token, @PathVariable("id") Long id, @PathVariable("productId") Long productId) 
+    {
+        ProductDto productDto = cartService.getProduct(productId);
+
+        Cart cart = cartService.addItem(token, id, productDto)
+            .orElseThrow(() -> new RuntimeException("Unable to add item to cart"));
+
+        CartDto cartDto = new CartDto(cart, cartService);
+
+        return ResponseEntity.ok(cartDto);
+    }
     
+    @GetMapping("/{id}/remove/{productId}")
+    public ResponseEntity<CartDto> removeFromCart(@RequestHeader("Authorization") String token, @PathVariable("id") Long id, @PathVariable("productId") Long productId) 
+    {
+        ProductDto productDto = cartService.getProduct(productId);
+
+        Cart cart = cartService.removeItem(token, id, productDto)
+            .orElseThrow(() -> new RuntimeException("Unable to removce item from cart"));
+
+        CartDto cartDto = new CartDto(cart, cartService);
+
+        return ResponseEntity.ok(cartDto);
+    }
 }
