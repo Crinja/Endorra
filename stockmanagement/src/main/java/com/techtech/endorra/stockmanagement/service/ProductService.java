@@ -2,6 +2,7 @@ package com.techtech.endorra.stockmanagement.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.techtech.endorra.stockmanagement.model.Product;
 import com.techtech.endorra.stockmanagement.repository.ProductRepository;
+import com.techtech.endorra.stockmanagement.service.dto.ProductDto;
 
 @Service
 public class ProductService {
@@ -60,6 +62,18 @@ public class ProductService {
     public List<Product> findAll() { return productRepository.findAll(); }
 
     public Optional<Product> findById(Long id) { return productRepository.findById(id); }
+
+    public List<ProductDto> findByTag(List<String> tags) 
+    {
+        List<String> lowered = tags.stream()
+            .map(String::toLowerCase)
+            .toList();
+
+        return productRepository.findByAnyTags(lowered)
+                .stream()
+                .map(ProductDto::fromEntity)
+                .collect(Collectors.toList());
+    }
 
     public Product updateProduct(String token, Product product) 
     {
