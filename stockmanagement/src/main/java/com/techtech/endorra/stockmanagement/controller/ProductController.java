@@ -39,6 +39,15 @@ public class ProductController {
         return ResponseEntity.ok(ProductDto.fromEntity(product));
     }
 
+    @GetMapping("/name/{name}")
+    public ResponseEntity<ProductDto> getProductFromName(@PathVariable String name) 
+    {
+        String trimmedName = name.trim();
+        Product product = productService.findByNameIgnoreCase(trimmedName)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        return ResponseEntity.ok(ProductDto.fromEntity(product));
+    }
+
     @GetMapping("/tags")
     public ResponseEntity<List<ProductDto>> getProductsByTags(
             @RequestParam("list") String tagList) 

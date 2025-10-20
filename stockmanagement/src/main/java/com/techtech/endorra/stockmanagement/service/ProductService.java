@@ -63,6 +63,8 @@ public class ProductService {
 
     public Optional<Product> findById(Long id) { return productRepository.findById(id); }
 
+    public Optional<Product> findByNameIgnoreCase(String name) { return productRepository.findByNameIgnoreCase(name); }
+
     public List<ProductDto> findByTag(List<String> tags) 
     {
         List<String> lowered = tags.stream()
