@@ -92,4 +92,13 @@ public class CartController
 
         return ResponseEntity.ok(cartDto);
     }
+
+    @PostMapping("/{id}/purchase")
+    public ResponseEntity<CartDto> purchase(@RequestHeader("Authorization") String token, @PathVariable("id") Long id)
+    {
+        Cart cart = cartService.purchase(token, id)
+            .orElseThrow(() -> new RuntimeException("Unable to get cart"));
+
+        return ResponseEntity.ok(new CartDto(cart, cartService));
+    }
 }

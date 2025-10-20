@@ -73,6 +73,8 @@ public class Product
         this.setName(name);
         this.setDescription(description);
         this.setPrice(price);
+        this.setStock(stock);
+        this.setImage(image);
         this.setSalePercentage(salePercentage);
         this.setOnSale(onSale);
     }

@@ -15,19 +15,23 @@ import com.techtech.endorra.catalog.model.CartItem;
 import com.techtech.endorra.catalog.repository.CartRepository;
 import com.techtech.endorra.catalog.service.dto.ProductDto;
 import com.techtech.endorra.catalog.service.dto.UserDto;
+import com.techtech.endorra.catalog.service.event.CartEventPublisher;
+import com.techtech.endorra.catalog.service.event.CartPurchasedEventDto;
 
 @Service
 public class CartService {
     private final CartRepository cartRepository;
     private final RestTemplate restTemplate;
+    private final CartEventPublisher cartEventPublisher;
 
     private static final String userServiceUrl = "http://localhost:8080/user";
     private static final String stockServiceUrl = "http://localhost:8081/products";
 
-    CartService(CartRepository cartRepository, RestTemplate restTemplate) 
+    CartService(CartRepository cartRepository, RestTemplate restTemplate, CartEventPublisher cartEventPublisher) 
     {
         this.cartRepository = cartRepository;
         this.restTemplate = restTemplate;
+        this.cartEventPublisher = cartEventPublisher;
     }
 
     private UserDto verifyUser(String token)
@@ -211,6 +215,34 @@ public class CartService {
         }
 
         Cart updated = cartRepository.save(cart);
+        return Optional.of(updated);
+    }
+
+    public Optional<Cart> purchase(String token, Long cartId)
+    {
+        UserDto user = verifyUser(token);
+
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        if (!cart.getUserEmail().equals(user.getEmail())) 
+        {
+            throw new RuntimeException("You cannot modify someone else's cart");
+        }
+
+        cart.purchase();
+
+        Cart updated = cartRepository.save(cart);
+
+        List<CartPurchasedEventDto.CartItemEvent> eventItems = updated.getItems().stream()
+            .map(item -> new CartPurchasedEventDto.CartItemEvent(
+                    item.getProductId(),
+                    item.getQuantity()))
+            .toList();
+
+        CartPurchasedEventDto eventDto = new CartPurchasedEventDto(eventItems);
+        cartEventPublisher.publishCartPurchased(eventDto);
+
         return Optional.of(updated);
     }
 

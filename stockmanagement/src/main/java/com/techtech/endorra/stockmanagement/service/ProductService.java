@@ -93,7 +93,7 @@ public class ProductService {
         productRepository.deleteById(id); 
     }
 
-    void addStock(Long productId, int amount) 
+    public void addStock(Long productId, int amount) 
     {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
@@ -101,7 +101,7 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    void removeStock(Long productId, int amount) 
+    public void removeStock(Long productId, int amount) 
     {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));

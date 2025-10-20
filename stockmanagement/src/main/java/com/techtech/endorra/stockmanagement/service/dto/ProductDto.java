@@ -49,6 +49,7 @@ public class ProductDto {
         this.setDescription(description);
         this.setTags(tags);
         this.setPrice(price);
+        this.setStock(stock);
         this.setOnSale(onSale);
         this.setSalePercentage(salePercentage);
         this.setCurrentPrice(currentPrice);
