@@ -59,7 +59,7 @@ public class CartController
         return ResponseEntity.ok(cartDto);
     }
 
-    @GetMapping("/{id}/delete")
+    @PostMapping("/{id}/delete")
     public ResponseEntity<String> deleteCart(@RequestHeader("Authorization") String token, @PathVariable("id") Long id) 
     {
         cartService.deleteCart(token, id);
@@ -67,7 +67,7 @@ public class CartController
         return ResponseEntity.ok("Cart deleted");
     }
 
-    @GetMapping("/{id}/add/{productId}")
+    @PostMapping("/{id}/add/{productId}")
     public ResponseEntity<CartDto> addToCart(@RequestHeader("Authorization") String token, @PathVariable("id") Long id, @PathVariable("productId") Long productId) 
     {
         ProductDto productDto = cartService.getProduct(productId);
@@ -80,7 +80,7 @@ public class CartController
         return ResponseEntity.ok(cartDto);
     }
     
-    @GetMapping("/{id}/remove/{productId}")
+    @PostMapping("/{id}/remove/{productId}")
     public ResponseEntity<CartDto> removeFromCart(@RequestHeader("Authorization") String token, @PathVariable("id") Long id, @PathVariable("productId") Long productId) 
     {
         ProductDto productDto = cartService.getProduct(productId);
