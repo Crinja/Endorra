@@ -1,7 +1,5 @@
 package com.techtech.endorra.catalog.service.dto;
 
-import java.io.Serializable;
-
 public class CartItemDto
 {
     private ProductDto product;
